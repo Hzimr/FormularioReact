@@ -1,10 +1,27 @@
 import { useState } from 'react'
 import './styles/global.css'
 import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+
+const createUserFormSchema = z.object({
+  email: z.string()
+    .nonempty('O e-mail é obrigatório')
+    .email('Formato de e-mail inválido'),
+  password: z.string()
+  .min(6, 'A senha precisa de no mínimo 6 caracteres'),
+})
 
 export function App() {
   const [output, setOutput] = useState('')
-  const { register, handleSubmit } = useForm()
+  const { 
+    register, 
+    handleSubmit, 
+    formState: { errors } 
+  } = useForm({
+    resolver: zodResolver(createUserFormSchema),
+  })
+
   
   function createUser(data: any) {
     setOutput(JSON.stringify(data, null, 2)) 
@@ -26,6 +43,7 @@ export function App() {
             className='border border-zinc-600 shadow-sm rounded h-10 px-3 bg-zinc-800 text-white'
             {...register('email')}
           />
+          {errors.email && <span className='text-red-500 '>{errors.email.message}</span>}
         </div>
         <div className="flex flex-col gap-1">
           <label htmlFor="">Senha</label>

@@ -24,7 +24,7 @@ const createUserFormSchema = z.object({
   techs: z.array(z.object({
     title: z.string().nonempty('O título é obrigatório'),
     knowledge: z.coerce.number().min(1).max(100),
-  }))
+  })).min(2, 'Insira pelo menos 2 tecnologias')
 })
 
 type CreateUserFormData = z.infer<typeof createUserFormSchema>
@@ -49,7 +49,7 @@ export function App() {
     append({title: '', knowledge: 0})
   }
 
-  function createUser(data: any) {
+  function createUser(data: CreateUserFormData) {
     setOutput(JSON.stringify(data, null, 2)) 
   }
 
@@ -69,7 +69,7 @@ export function App() {
             className='border border-zinc-600 shadow-sm rounded h-10 px-3 bg-zinc-800 text-white'
             {...register('name')}
           />
-          {errors.name && <span className='text-red-500 '>{errors.name.message}</span>}
+          {errors.name && <span className='text-red-500 text-sm'>{errors.name.message}</span>}
         </div>
         <div className="flex flex-col gap-1">
           <label htmlFor="email">E-mail</label>
@@ -78,7 +78,7 @@ export function App() {
             className='border border-zinc-600 shadow-sm rounded h-10 px-3 bg-zinc-800 text-white'
             {...register('email')}
           />
-          {errors.email && <span className='text-red-500 '>{errors.email.message}</span>}
+          {errors.email && <span className='text-red-500 text-sm '>{errors.email.message}</span>}
         </div>
         <div className="flex flex-col gap-1">
           <label htmlFor="password">Senha</label>
@@ -87,7 +87,7 @@ export function App() {
             className='border border-zinc-600 shadow-sm rounded h-10 px-3 bg-zinc-800 text-white'
             {...register('password')}
           />
-          {errors.password && <span className='text-red-500 '>{errors.password.message}</span>}
+          {errors.password && <span className='text-red-500 text-sm '>{errors.password.message}</span>}
 
         </div>
 
@@ -111,7 +111,7 @@ export function App() {
                 {...register(`techs.${index}.title`)}
               />
 
-            {errors.techs?.[index]?.title && <span className='text-red-500 '>{errors.techs?.[index]?.title?.message}</span>}
+            {errors.techs?.[index]?.title && <span className='text-red-500 text-sm'>{errors.techs?.[index]?.title?.message}</span>}
           </div>
 
             <div className="flex-1  flex flex-col gap-1" key={field.id}>
@@ -121,12 +121,15 @@ export function App() {
                 {...register(`techs.${index}.knowledge`)}
               />
 
-            {errors.techs?.[index]?.knowledge && <span className='text-red-500 '>{errors.techs?.[index]?.knowledge?.message}</span>}
+            {errors.techs?.[index]?.knowledge && <span className='text-red-500 text-sm '>{errors.techs?.[index]?.knowledge?.message}</span>}
             </div>
 
             </div>
           )
         })}
+
+        {errors.techs && <span className='text-red-500 '>{errors.techs.message}</span>}
+
         </div>
 
 
